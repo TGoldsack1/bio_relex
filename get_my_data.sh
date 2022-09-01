@@ -1,8 +1,6 @@
 #!/bin/bash
 # Author: Tomas Goldsack
 
-mkdir -p -- ./resources
-cd ./resources
 
 fileid="1lvsqvsFi3W-pE1SqNZI0s8NR9rC1tsja"
 filename="pubmed-data.zip"

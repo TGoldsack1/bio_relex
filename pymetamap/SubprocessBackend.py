@@ -167,6 +167,8 @@ class SubprocessBackend(MetaMap):
 
             command.append('--silent')
 
+            print(sentences)
+            print(ids)
             if sentences is not None:
                 input_text = None
                 if ids is not None:
@@ -189,14 +191,17 @@ class SubprocessBackend(MetaMap):
 
                 input_process = subprocess.Popen(input_command, stdout=subprocess.PIPE)
                 metamap_process = subprocess.Popen(command, stdout=subprocess.PIPE, stdin=input_process.stdout)
-
                 output, error = metamap_process.communicate()
+
                 if sys.version_info[0] > 2:
                     if isinstance(output, bytes):
                         output = output.decode()
 
                 # "Processing" sentences are returned as stderr. Hence success/failure of metamap_process needs to be
                 #  checked by its returncode.
+
+                print(metamap_process.returncode)
+
                 if metamap_process.returncode == 0:
                     # Initial line(s) of output contains MetaMap command and MetaMap details.
                     # Even on using --silent option, MetaMap command is sent to stdout.
@@ -206,6 +211,7 @@ class SubprocessBackend(MetaMap):
                         next_new_line = output.find('\n', prev_new_line + 1)
                         if next_new_line < 0:
                             next_new_line = len(output)
+                            
                         # Check if the current line is in MMI output format i.e. fields separated by '|'
                         fields = output[prev_new_line + 1:next_new_line].split('|')
                         # https://metamap.nlm.nih.gov/Docs/MMI_Output_2016.pdf
@@ -215,7 +221,10 @@ class SubprocessBackend(MetaMap):
                         else:
                             prev_new_line = next_new_line
 
+                        print(output)
+
                     output = output[prev_new_line + 1:]
+                    
                 else:
                     error = "ERROR: MetaMap failed"
             else:
@@ -240,5 +249,6 @@ class SubprocessBackend(MetaMap):
                 input_file.close()
                 os.remove(output_file.name)
 
+        print(error)
         concepts = Corpus.load(output.splitlines())
         return (concepts, error)

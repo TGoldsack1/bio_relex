@@ -28,7 +28,9 @@ BIORELEX_RELATION_TYPES = [NOT_RELATION, -1, 0, 1]
 DATASETS = [ADE, BIORELEX]
 
 # Model Save Path
-BASE_SAVE_PATH = '/shared/nas/data/m1/tuanml2/tmp'
+# BASE_SAVE_PATH = '/shared/nas/data/m1/tuanml2/tmp'
+BASE_SAVE_PATH = join(BASE_PATH, 'tmp')
+
 
 # Caches
 CACHE_DIR = join(BASE_PATH, 'caches')
@@ -40,7 +42,9 @@ UMLS_SEMTYPES_FILE = join(BASE_PATH, 'resources/umls_semtypes.txt')
 UMLS_RELTYPES_FILE = join(BASE_PATH, 'resources/umls_reltypes.txt')
 UMLS_TEXT2GRAPH_FILE = join(BASE_PATH, 'resources/text2graph.pkl')
 UMLS_EMBS_SIZE = 50 # https://github.com/r-mal/umls-embeddings
-METAMAP_PATH = '/shared/nas/data/m1/tuanml2/software/public_mm/bin/metamap20'
+# METAMAP_PATH = '/shared/nas/data/m1/tuanml2/software/public_mm/bin/metamap20'
+METAMAP_PATH = '/home/tomas/models/public_mm/bin/metamap20'
+
 MM_TYPES = ['aapp', 'acab', 'acty', 'aggp', 'amas', 'amph', 'anab', 'anim',
             'anst', 'antb', 'arch', 'bacs', 'bact', 'bdsu', 'bdsy', 'bhvr',
             'biof', 'bird', 'blor', 'bmod', 'bodm', 'bpoc', 'bsoj', 'celc',

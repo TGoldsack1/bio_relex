@@ -71,6 +71,7 @@ class Corpus(list):
         stream = iter(stream)
         corpus = this_class()
         for line in stream:
+            print(line)
             fields = line.split('|')
             if fields[1] == 'MMI':
                 corpus.append(ConceptMMI.from_mmi(line))
