@@ -167,8 +167,6 @@ class SubprocessBackend(MetaMap):
 
             command.append('--silent')
 
-            print(sentences)
-            print(ids)
             if sentences is not None:
                 input_text = None
                 if ids is not None:
@@ -200,8 +198,6 @@ class SubprocessBackend(MetaMap):
                 # "Processing" sentences are returned as stderr. Hence success/failure of metamap_process needs to be
                 #  checked by its returncode.
 
-                print(metamap_process.returncode)
-
                 if metamap_process.returncode == 0:
                     # Initial line(s) of output contains MetaMap command and MetaMap details.
                     # Even on using --silent option, MetaMap command is sent to stdout.
@@ -221,9 +217,9 @@ class SubprocessBackend(MetaMap):
                         else:
                             prev_new_line = next_new_line
 
-                        print(output)
-
                     output = output[prev_new_line + 1:]
+
+                    print(output)
                     
                 else:
                     error = "ERROR: MetaMap failed"
@@ -249,6 +245,5 @@ class SubprocessBackend(MetaMap):
                 input_file.close()
                 os.remove(output_file.name)
 
-        print(error)
         concepts = Corpus.load(output.splitlines())
         return (concepts, error)

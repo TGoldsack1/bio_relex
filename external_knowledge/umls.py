@@ -18,7 +18,8 @@ def umls_search_concepts(sents, filtered_types = MM_TYPES):
     search_results, cache_used, api_called = [], 0, 0
     sqlitedict = SqliteDict(UMLS_CONCEPTS_SQLITE, autocommit=True)
     for sent_idx, sent in enumerate(sents):
-        if sent in sqlitedict:
+        #if sent in sqlitedict:
+        if False:
             # Use cache
             cache_used += 1
             raw_concepts = sqlitedict[sent]
