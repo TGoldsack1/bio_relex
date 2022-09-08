@@ -218,8 +218,6 @@ class SubprocessBackend(MetaMap):
                             prev_new_line = next_new_line
 
                     output = output[prev_new_line + 1:]
-
-                    print(output)
                     
                 else:
                     error = "ERROR: MetaMap failed"

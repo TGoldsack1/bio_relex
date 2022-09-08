@@ -13,7 +13,7 @@ from utils import create_dir_if_not_exist
 TEXT2GRAPH = pickle.loads(open(UMLS_TEXT2GRAPH_FILE, 'rb').read().replace(b'\r\n', b'\n'))
 
 # Main Functions
-def umls_search_concepts(sents, filtered_types = MM_TYPES):
+def umls_search_concepts(sents, prune=False, filtered_types = MM_TYPES):
     create_dir_if_not_exist(CACHE_DIR)
     search_results, cache_used, api_called = [], 0, 0
     sqlitedict = SqliteDict(UMLS_CONCEPTS_SQLITE, autocommit=True)
@@ -27,7 +27,39 @@ def umls_search_concepts(sents, filtered_types = MM_TYPES):
             # Use MetaMAP API
             api_called += 1
             METAMAP = MetaMap.get_instance(METAMAP_PATH)
-            raw_concepts, error = METAMAP.extract_concepts([sent], [0])
+            if not prune:
+                raw_concepts, error = METAMAP.extract_concepts([sent], [0])
+            else:
+                raw_concepts, error = METAMAP.extract_concepts(
+                    [sent], 
+                    [0],
+                    4,
+                    None,
+                    'sldi',
+                    False,
+                    False,
+                    False,
+                    False,
+                    False,
+                    False,
+                    False,
+                    False,
+                    False,
+                    False,
+                    False,
+                    False,
+                    False,
+                    False,
+                    False,
+                    30,
+                    False,
+                    [],
+                    [],
+                    [],
+                    [],
+                    []
+                )
+
             if error is None:
                 sqlitedict[sent] = raw_concepts
             else:
