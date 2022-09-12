@@ -242,6 +242,6 @@ class SubprocessBackend(MetaMap):
             else:
                 input_file.close()
                 os.remove(output_file.name)
-
+                
         concepts = Corpus.load(output.splitlines())
         return (concepts, error)

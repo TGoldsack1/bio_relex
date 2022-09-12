@@ -3,7 +3,8 @@
 
 nohup /home/tomas/models/public_mm/bin/skrmedpostctl start
 nohup /home/tomas/models/public_mm/bin/wsdserverctl start
-nohup python create_background_knowledge.py
+# nohup python create_background_knowledge.py
+nohup python create_discourse_graph.py
 /home/tomas/models/public_mm/bin/skrmedpostctl stop
 /home/tomas/models/public_mm/bin/wsdserverctl stop
 

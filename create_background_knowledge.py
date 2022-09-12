@@ -1,10 +1,8 @@
-import pprint
 import logging
 import json
 from os import path
 from datetime import datetime
 from external_knowledge import umls_search_concepts
-
 
 logging.basicConfig(
   filename="./logs/create_graphs.log.{}".format(datetime.timestamp(datetime.now())), 
@@ -37,11 +35,10 @@ def load_datafile(fp):
     else:
       data = json.loads(in_file.read())
       sentences = [[x["abstract"] + x["sections"][0]] for x in data]
-      sentences = [item for sublist in sentences for item in sublist]
+      sentences = [item for sublist in sentences for item in sublist] ## need to move this out of if statement
       ids = [x["id"] for x in data]
 
     return ids, sentences
-
 
 with open("./resources/umls_rels.txt", "r") as in_file:
   lines = in_file.readlines()

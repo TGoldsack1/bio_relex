@@ -37,6 +37,7 @@ def umls_search_concepts(sents, prune=False, filtered_types = MM_TYPES):
                     None,
                     'sldi',
                     False,
+                    True, # word sense disambiguation
                     False,
                     False,
                     False,
@@ -50,8 +51,7 @@ def umls_search_concepts(sents, prune=False, filtered_types = MM_TYPES):
                     False,
                     False,
                     False,
-                    False,
-                    30,
+                    25,
                     False,
                     [],
                     [],
