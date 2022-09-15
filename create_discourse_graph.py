@@ -4,7 +4,6 @@ from os import path
 from datetime import datetime
 from enum import Enum
 import pprint
-
 from external_knowledge import umls_search_concepts
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -29,10 +28,10 @@ ISA_RELATION = 'T186'
 
 # My variable
 data_files = [
-  "./resources/eLife_split/train.json",
-  "./resources/eLife_split/val.json",
-  "./resources/eLife_split/test.json",
-  "./resources/PLOS_split/train.json",
+  # "./resources/eLife_split/train.json",
+  # "./resources/eLife_split/val.json",
+  # "./resources/eLife_split/test.json",
+  # "./resources/PLOS_split/train.json",
   "./resources/PLOS_split/val.json",
   "./resources/PLOS_split/test.json",
   "./resources/pubmed-dataset/train.txt",
@@ -45,7 +44,7 @@ data_files = [
 #   relation_triples = [tuple(l.replace("\n", "").split('|')) for l in lines]
 
 def load_datafile(fp):
-  with open(fp, "r") as in_file:
+  with open(fp, "rb") as in_file:
     if "pubmed" in fp:
       data = in_file.readlines()
       data = [json.loads(l) for l in data]
@@ -69,7 +68,7 @@ def load_datafile(fp):
     return ids, sections, section_names, abstracts, titles, keywords, years
 
 
-def get_discourse_graph(document_dict, prune=False):
+def get_discourse_graph(document_dict):
   nodes = set()
   edges = set()
   
@@ -79,33 +78,39 @@ def get_discourse_graph(document_dict, prune=False):
   if document_dict['title'] != "":
     nodes.add(document_dict['title']) # title node
     edges.add((document_dict['id'], Discourse_Relations.HAS_TITLE.value, document_dict['title']))
-    # edges.add((document_dict['title'], Discourse_Relations.IS_TITLE_OF.value, document_dict['id']))
 
   # Year nodes / relations
   if document_dict['year'] != "":
     nodes.add(document_dict['year'])
     edges.add((document_dict['id'], Discourse_Relations.WAS_PUBLISHED_IN.value, document_dict['year']))
-    # edges.add((document_dict['year'], Discourse_Relations.IS_THE_YEAR_OF_PUBLICATION_FOR.value, document_dict['id']))
 
   # Abstract nodes / relations
   if document_dict['abstract'] != "":
     abstract_node = document_dict['id'] + "_Abs"
+    print(abstract_node)
+
     nodes.add(abstract_node)
     edges.add((document_dict['id'], Discourse_Relations.CONTAINS.value, abstract_node))
-    # edges.add((abstract_node, Discourse_Relations.IS_CONTAINED_IN.value, document_dict['id']))
+
+    abstract = " ".join(document_dict['abstract']).strip()
 
     # Abstract sentence nodes / relations
-    for i, sentence in enumerate(document_dict['abstract']):
-      sentence_node = abstract_node + "_sent" + str(i)
-      nodes.add(sentence_node)
-      edges.add((abstract_node, Discourse_Relations.CONTAINS.value, sentence_node))
-      # edges.add((sentence_node, Discourse_Relations.IS_CONTAINED_IN.value, abstract_node))
+    kg_concepts = umls_search_concepts([abstract])[0][0]['concepts']
+
+    for c in kg_concepts:
+      nodes.add(c['cui'])
+      edges.add((abstract_node, Discourse_Relations.CONTAINS.value, c['cui']))
+
+      for stype in c['semtypes']:
+        nodes.add(stype)
+        edges.add((c['cui'], ISA_RELATION, stype))
+      
+  print("abstract_completed")
 
   # Keyword nodes / relations
   for kw in document_dict['keywords']:
     nodes.add(kw)
     edges.add((document_dict['id'], Discourse_Relations.HAS_KEYWORD.value, kw))
-    # edges.add((kw, Discourse_Relations.IS_KEYWORD_OF.value, document_dict['id']))
 
   # Section nodes / relations
   for i, section in enumerate(document_dict['sections']):
@@ -116,36 +121,41 @@ def get_discourse_graph(document_dict, prune=False):
     sec_node = document_dict['id'] + "_Sec" + str(i)
     nodes.add(sec_node)
 
+    print(sec_node)
+
     # Section heading node
     nodes.add(section_heading)
     edges.add((sec_node, Discourse_Relations.HAS_TITLE.value, section_heading))
-    # edges.add((section_heading, Discourse_Relations.IS_TITLE_OF.value, sec_node))
 
-    # Section sentence nodes / relations
-    for j, sent in enumerate(section):
-      sent = sent if len(sent) < 1000 else sent[:1000]
-      sent_node = sec_node + "_sent" + str(j)
-      nodes.add(sent_node)
-      edges.add((sec_node, Discourse_Relations.CONTAINS.value, sent_node))
-      # edges.add((sent_node, Discourse_Relations.IS_CONTAINED_IN.value, sec_node))
+    section = section if len(section) < 100 else section[:100]
+    section = [s if len(s) < 1000 else s[:1000] for s in section] 
 
-      # Get concepts using metamap
-      kg_concepts = umls_search_concepts([sent], prune)[0][0]['concepts']
+    try:
+      section_text = " ".join(section).strip()
+      kg_concepts = umls_search_concepts([section_text])[0][0]['concepts']
+    except IndexError:
+      print("IndexError")
       
-      # Add concept nodes and concept-type relations
-      for c in kg_concepts:
-        nodes.add(c['cui'])
-        edges.add((sent_node, Discourse_Relations.CONTAINS.value, c['cui']))
-        # edges.add((c['cui'], Discourse_Relations.IS_CONTAINED_IN.value, sent_node))
+      split_point = int(len(section) / 2)
 
-        for stype in c['semtypes']:
-          nodes.add(stype)
-          edges.add((c['cui'], ISA_RELATION, stype))
+      try:
+        section_text1 = " ".join(section[:split_point]).strip()
+        section_text2 = " ".join(section[split_point:]).strip()
+        kg_concepts1 = umls_search_concepts([section_text1])[0][0]['concepts']
+        kg_concepts2 = umls_search_concepts([section_text2])[0][0]['concepts']
+        kg_concepts = kg_concepts1 + kg_concepts2
+      except IndexError:
+        print("IndexError2")
+        section = [s if len(s) < 500 else s[:500] for s in section] 
+        kg_concepts = umls_search_concepts([section_text[:split_point]])[0][0]['concepts']
 
-  # # add type-type relations from UMLS 
-  # for rel in relation_triples:
-  #   if (rel[0] in nodes) and (rel[2] in nodes): 
-  #     edges.add(rel)
+    for c in kg_concepts:
+      nodes.add(c['cui'])
+      edges.add((sec_node, Discourse_Relations.CONTAINS.value, c['cui']))
+
+      for stype in c['semtypes']:
+        nodes.add(stype)
+        edges.add((c['cui'], ISA_RELATION, stype))
 
   return { 'edges': list(edges), "nodes": list(nodes) }
 
@@ -177,12 +187,8 @@ for fp in data_files:
         "year": years[ind],
       }
 
-      out_dict = get_discourse_graph(data_dict, True)
+      out_dict = get_discourse_graph(data_dict)
         
       out_dict['id'] = ids[ind]
       out_file.write(json.dumps(out_dict))
       out_file.write("\n")
-
-
-
-

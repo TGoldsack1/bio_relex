@@ -35,7 +35,7 @@ def get_rcui2abbrv():
 
 def examine(split, entity_types, relation_types):
     rcui2abbrv = get_rcui2abbrv()
-    for inst in split[:1]:
+    for inst in split[30:31]:
         
         # added
         # text = (" ".join(inst)).strip()
@@ -67,10 +67,12 @@ def examine(split, entity_types, relation_types):
         # Map node to texts and semtypes
         #print('\nNodes:')
         
+        text = " ".join(text).strip()
         print(text)
+
         kg_concepts = umls_search_concepts([text])[0][0]['concepts']
         print(kg_concepts)
-
+        print(len(kg_concepts))
         
         # for n in nodes:
         #     node_texts, node_semtypes = [], []
@@ -134,8 +136,10 @@ if __name__ == "__main__":
     with open(data_source, "r") as in_file:
       train = json.loads(in_file.read())
     
-    train = [[x["abstract"]] + x["sections"] for x in train]
-    train = [item for sublist in train for item in sublist]
+    # train = [[x["abstract"]] + x["sections"] for x in train]
+    train = [x["sections"] for x in train]
+
+    # train = [item for sublist in train for item in sublist]
 
     entity_types = []
     relation_types = []

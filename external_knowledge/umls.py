@@ -51,7 +51,7 @@ def umls_search_concepts(sents, prune=False, filtered_types = MM_TYPES):
                     False,
                     False,
                     False,
-                    25,
+                    30,
                     False,
                     [],
                     [],
@@ -82,7 +82,16 @@ def umls_search_concepts(sents, prune=False, filtered_types = MM_TYPES):
             raw_pos_info = raw_pos_info.replace(']','')
             pos_infos = raw_pos_info.split(',')
             for pos_info in pos_infos:
-                start, length = [int(a) for a in pos_info.split('/')]
+                
+                try:
+                    start, length = [int(a) for a in pos_info.split('/')]
+                except:
+                    print('Skipped', pos_info)
+                    start = 0
+                    length = 0
+                    continue
+                
+                
                 start_char = start - 1
                 end_char = start+length-1
                 # Heuristics Rules
