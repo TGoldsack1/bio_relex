@@ -17,10 +17,14 @@ from transformers import *
 from data import load_data
 from argparse import ArgumentParser
 from external_knowledge import umls_search_concepts
+import pprint
+from itertools import groupby
+from operator import itemgetter
 
 # My variable
 data_source = "./resources/eLife_split/train.json"
 
+pp = pprint.PrettyPrinter(indent=4)
 
 TEXT2GRAPH = pickle.loads(open(UMLS_TEXT2GRAPH_FILE, 'rb').read().replace(b'\r\n', b'\n'))
 MIN_NB_NON_SINGLETONS = 1
@@ -67,13 +71,22 @@ def examine(split, entity_types, relation_types):
         # Map node to texts and semtypes
         #print('\nNodes:')
         
-        text = " ".join(text).strip()
-        print(text)
+        text = "The strengths of our study are its innovative methods of characterizing seasonality of mortality dynamically over space and time , by age group and cause of death; using wavelet and centre of gravity analyses; using ERA-Interim data output to compare the association between seasonality of death rates and regional temperature . A limitation of our study is that we did not investigate seasonality of mortality by socioeconomic characteristics which may help with understanding its determinants and planning responses ."
+        # text = " ".join(text).strip()
+        # print(text)
 
         kg_concepts = umls_search_concepts([text])[0][0]['concepts']
-        print(kg_concepts)
-        print(len(kg_concepts))
         
+        # pp.pprint(kg_concepts)
+        # print(len(kg_concepts))
+        print("---")
+
+        trigger_words = [(x['start_char'], x['end_char']) for x in kg_concepts]
+
+        trigger_concepts = { text[t[0]:t[1]]: [c for c in kg_concepts if (c['start_char'], c['end_char']) == t] for t in trigger_words } # print(trigger
+        
+        pp.pprint(trigger_concepts)
+
         # for n in nodes:
         #     node_texts, node_semtypes = [], []
         #     for c in kg_concepts:

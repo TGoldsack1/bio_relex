@@ -12,6 +12,7 @@ from utils import create_dir_if_not_exist
 
 TEXT2GRAPH = pickle.loads(open(UMLS_TEXT2GRAPH_FILE, 'rb').read().replace(b'\r\n', b'\n'))
 
+
 # Main Functions
 def umls_search_concepts(sents, prune=False, filtered_types = MM_TYPES):
     create_dir_if_not_exist(CACHE_DIR)
@@ -91,7 +92,6 @@ def umls_search_concepts(sents, prune=False, filtered_types = MM_TYPES):
                     length = 0
                     continue
                 
-                
                 start_char = start - 1
                 end_char = start+length-1
                 # Heuristics Rules
@@ -101,7 +101,9 @@ def umls_search_concepts(sents, prune=False, filtered_types = MM_TYPES):
                 # Update processed_concepts
                 processed_concepts.append({
                     'cui': concept.cui, 'semtypes': semtypes,
-                    'start_char': start_char, 'end_char': end_char
+                    'start_char': start_char, 'end_char': end_char,
+                    "score": concept.score, "preferred_name": concept.preferred_name,
+                    "trigger": concept.trigger
                 })
         search_results.append({
             'sent_idx': sent_idx, 'concepts': processed_concepts

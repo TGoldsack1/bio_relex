@@ -1,0 +1,54 @@
+physically_related_to|T132|Related by virtue of some physical attribute or characteristic.
+part_of|T133|Composes, with one or more other physical units, some larger whole. This includes component of, division of, portion of, fragment of, section of, and layer of.
+contains|T134|Holds or is the receptacle for fluids or other substances. This includes is filled with, holds, and is occupied by.
+location_of|T135|The position, site, or region of an entity or the site of a process.
+temporally_related_to|T136|Related in time by preceding, co-occuring with, or following.
+co-occurs_with|T137|Occurs at the same time as, together with, or jointly. This includes is co-incident with, is concurrent with, is contemporaneous with, accompanies, coexists with, and is concomitant with.
+precedes|T138|Occurs earlier in time. This includes antedates, comes before, is in advance of, predates, and is prior to.
+functionally_related_to|T139|Related by the carrying out of some function or activity.
+process_of|T140|Action, function, or state of.
+carries_out|T141|Executes a function or performs a procedure or activity. This includes transacts, operates on, handles, and executes.
+interacts_with|T142|Acts, functions, or operates together with.
+practices|T143|Performs habitually or customarily.
+produces|T144|Brings forth, generates or creates. This includes yields, secretes, emits, biosynthesizes, generates, releases, discharges, and creates.
+exhibits|T145|Shows or demonstrates.
+disrupts|T146|Alters or influences an already existing condition, state, or situation. Produces a negative effect on.
+causes|T147|Brings about a condition or an effect. Implied here is that an agent, such as for example, a pharmacologic substance or an organism, has brought about the effect. This includes induces, effects, evokes, and etiology.
+prevents|T148|Stops, hinders or eliminates an action or condition.
+complicates|T149|Causes to become more severe or complex or results in adverse effects.
+manifestation_of|T150|That part of a phenomenon which is directly observable or concretely or visibly expressed, or which gives evidence to the underlying process. This includes expression of, display of, and exhibition of.
+affects|T151|Produces a direct effect on. Implied here is the altering or influencing of an existing condition, state, situation, or entity. This includes has a role in, alters, influences, predisposes, catalyzes, stimulates, regulates, depresses, impedes, enhances, contributes to, leads to, and modifies.
+occurs_in|T152|Takes place in or happens under given conditions, circumstances, or time periods, or in a given location or population. This includes appears in, transpires, comes about, is present in, and exists in.
+manages|T153|Administers, or contributes to the care of an individual or group of individuals.
+treats|T154|Applies a remedy with the object of effecting a cure or managing a condition.
+uses|T155|Employs in the carrying out of some activity. This includes applies, utilizes, employs, and avails.
+indicates|T156|Gives evidence for the presence at some time of an entity or process.
+result_of|T157|The condition, product, or state occurring as a consequence, effect, or conclusion of an activity or process. This includes product of, effect of, sequel of, outcome of, culmination of, and completion of.
+conceptually_related_to|T158|Related by some abstract concept, thought, or idea.
+property_of|T159|Characteristic of, or quality of.
+conceptual_part_of|T160|Conceptually a portion, division, or component of some larger whole.
+evaluation_of|T161|Judgment of the value or degree of some attribute or process.
+measures|T162|Ascertains or marks the dimensions, quantity, degree, or capacity of.
+diagnoses|T163|Distinguishes or identifies the nature or characteristics of.
+assesses_effect_of|T164|Analyzes the influence or consequences of the function or action of.
+issue_in|T165|Is an issue in or a point of discussion, study, debate, or dispute.
+associated_with|T166|has a significant or salient relationship to.
+consists_of|T172|Is structurally made up of in whole or in part of some material or matter. This includes composed of, made of, and formed of.
+adjacent_to|T173|Close to, near or abutting another physical unit with no other structure of the same kind intervening. This includes adjoins, abuts, is contiguous to, is juxtaposed, and is close to.
+connected_to|T174|Directly attached to another physical unit as tendons are connected to muscles. This includes attached to and anchored to.
+interconnects|T175|Serves to link or join together two or more other physical units. This includes joins, links, conjoins, articulates, separates, and bridges.
+surrounds|T176|Establishes the boundaries for, or defines the limits of another physical structure. This includes limits, bounds, confines, encloses, and circumscribes.
+traverses|T177|Crosses or extends across another physical structure or area. This includes crosses over and crosses through.
+derivative_of|T178|In chemistry, a substance structurally related to another or that can be made from the other substance. This is used only for structural relationships. This does not include functional relationships such as metabolite of, by product of, nor analog of.
+developmental_form_of|T179|An earlier stage in the individual maturation of.
+degree_of|T180|The relative intensity of a process or the relative intensity or amount of a quality or attribute.
+measurement_of|T182|The dimension, quantity, or capacity determined by measuring.
+method_of|T183|The manner and sequence of events in performing an act or procedure.
+isa|T186|The basic hierarchical link in the Network. If one item "isa" another item then the first item is more specific in meaning than the second item.
+brings_about|T187|Acts on or influences an entity.
+performs|T188|Executes, accomplishes, or achieves an activity.
+spatially_related_to|T189|Related by place or region.
+analyzes|T193|Studies or examines using established quantitative or qualitative methods.
+branch_of|T198|Arises from the division of. For example, the arborization of arteries.
+tributary_of|T199|Merges with. For example, the confluence of veins.
+ingredient_of|T202|Is a component of, as in a constituent of a preparation.

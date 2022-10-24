@@ -5,6 +5,8 @@ from datetime import datetime
 from enum import Enum
 import pprint
 from external_knowledge import umls_search_concepts
+import chardet    
+
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -32,11 +34,11 @@ data_files = [
   # "./resources/eLife_split/val.json",
   # "./resources/eLife_split/test.json",
   # "./resources/PLOS_split/train.json",
-  "./resources/PLOS_split/val.json",
-  "./resources/PLOS_split/test.json",
-  "./resources/pubmed-dataset/train.txt",
-  "./resources/pubmed-dataset/val.txt",
-  "./resources/pubmed-dataset/test.txt"
+  # "./resources/PLOS_split/val.json",
+  # "./resources/PLOS_split/test.json",
+  "./resources/pubmed-dataset/train.txt"
+  # "./resources/pubmed-dataset/val.jsonl",
+  # "./resources/pubmed-dataset/test.jsonl"
 ]
 
 # with open("./resources/umls_rels.txt", "r") as in_file:
@@ -44,9 +46,10 @@ data_files = [
 #   relation_triples = [tuple(l.replace("\n", "").split('|')) for l in lines]
 
 def load_datafile(fp):
-  with open(fp, "rb") as in_file:
+  with open(fp, "r") as in_file:
     if "pubmed" in fp:
       data = in_file.readlines()
+      data = [l for l in data if l]
       data = [json.loads(l) for l in data]
       sections = [x['sections'] for x in data]
       section_names = [x['section_names'] for x in data]
@@ -120,6 +123,9 @@ def get_discourse_graph(document_dict):
     # Section node
     sec_node = document_dict['id'] + "_Sec" + str(i)
     nodes.add(sec_node)
+    
+    edges.add((document_dict['id'], Discourse_Relations.CONTAINS.value, sec_node))
+
 
     print(sec_node)
 
@@ -135,19 +141,33 @@ def get_discourse_graph(document_dict):
       kg_concepts = umls_search_concepts([section_text])[0][0]['concepts']
     except IndexError:
       print("IndexError")
+      success = False
+      i = 2
       
-      split_point = int(len(section) / 2)
+      while not success:
+        split_point = int(len(section) / i)
 
-      try:
-        section_text1 = " ".join(section[:split_point]).strip()
-        section_text2 = " ".join(section[split_point:]).strip()
-        kg_concepts1 = umls_search_concepts([section_text1])[0][0]['concepts']
-        kg_concepts2 = umls_search_concepts([section_text2])[0][0]['concepts']
-        kg_concepts = kg_concepts1 + kg_concepts2
-      except IndexError:
-        print("IndexError2")
-        section = [s if len(s) < 500 else s[:500] for s in section] 
-        kg_concepts = umls_search_concepts([section_text[:split_point]])[0][0]['concepts']
+        try:
+          kg_concepts = []
+          for j in range(i):
+            section_text = " ".join(section[split_point*j:split_point*(j+1)]).strip()
+            kg_concepts = kg_concepts + umls_search_concepts([section_text])[0][0]['concepts']
+          
+          success = True
+        
+        except IndexError:
+          print(f"IndexError{i}")
+          i += 2
+          if i > 9:
+            kg_concepts = umls_search_concepts([section[0]])[0][0]['concepts']
+            success = True
+          elif i > 7:
+            section = [s if len(s) < 125 else s[:125] for s in section]
+          elif i > 5:
+            section = [s if len(s) < 250 else s[:250] for s in section]
+          elif i > 3:
+            section = [s if len(s) < 500 else s[:500] for s in section]
+
 
     for c in kg_concepts:
       nodes.add(c['cui'])
@@ -161,6 +181,7 @@ def get_discourse_graph(document_dict):
 
 
 for fp in data_files:
+  print(fp)
 
   ds = fp.split("/")[2] + "/" + fp.split("/")[3]
   ids, sections, section_names, abstracts, titles, keywords, years = load_datafile(fp)
@@ -169,13 +190,20 @@ for fp in data_files:
   is_existing = path.exists(out_path)
   o_type = "r+" if is_existing else "w"
 
+  print(out_path)
+
   with open(out_path, o_type) as out_file:
-    i = len(out_file.readlines()) if is_existing else 0
+    
+    if "pubmed" in fp and "train" in fp:
+      i = 49380
+    else:
+      i = len(out_file.readlines()) if is_existing else 0
+    
+    print(len(ids))
     # data = zip(ids[i:], sections[i:], section_names[i:], abstracts[i:], titles[i:], keywords[i:], years[i:])
 
     for ind in range(i, len(ids)):
-      logging.info(f'data_file={ds}, idx={i}, id={ids[ind]}')
-      i += 1
+      logging.info(f'data_file={ds}, idx={ind}, id={ids[ind]}')
 
       data_dict = {
         "id": ids[ind],

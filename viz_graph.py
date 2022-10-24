@@ -8,12 +8,23 @@ from constants import *
 import matplotlib.pyplot as plt
 import networkx as nx
 import json
+import pprint
+
+pp = pprint.PrettyPrinter(indent=4)
+
 
 # Get graph data
 with open("resources/eLife_split/train_disc_graphs.jsonl", "r") as f:
   lines = f.readlines()
   graph_data = json.loads(lines[0])
   print(graph_data['id'])
+
+
+with open("resources/eLife_split/train.json", "r") as f:
+  data_text = json.loads(f.read())
+  data_text = [x for x in data_text if x['id'] == "elife-35500-v1"][0]
+  pp.pprint(" ".join(data_text['sections'][1]))
+
 
 # Relation types
 relation_types = set()
@@ -22,6 +33,7 @@ with open(UMLS_RELTYPES_FILE, 'r') as f:
   for line in f:
     relation_types.add(line.strip().split('|')[1])
     rel_map[line.strip().split('|')[1]] = line.strip().split('|')[0]
+
 
 # Semantic types
 node_map = {}
@@ -49,7 +61,9 @@ for n in graph_data["nodes"]:
 central_node = graph_data['id'] + "_Sec1" #"C3245479" #graph_data['id'] + "_Sec1" #graph_data['id'] + "_Abs" 
 
 edges = [e for e in edges if (e[0] == central_node or e[2] == central_node)]
-print(edges)
+pp.pprint(edges)
+# print(edges)
+
 
 # mapping dicts
 #nodes = graph_data["nodes"]
